@@ -104,3 +104,22 @@ def exportar_por_ano():
 
 # Testar a função
 exportar_por_ano()
+
+# ---------------------------
+# Atividade 3 - Exportar todos (nome e CPF sem anonimizar)
+# ---------------------------
+import csv
+
+def exportar_todos():
+    with engine.connect() as conn:
+        result = conn.execute(text("SELECT * FROM usuarios"))
+        with open("todos.csv", "w", newline="", encoding="utf-8") as f:
+            writer = csv.writer(f)
+            # cabeçalho opcional
+            writer.writerow(["nome", "cpf"])
+            for row in result:
+                id, nome, cpf, email, telefone, data_nascimento, created_on, updated_on = row
+                writer.writerow([nome, cpf])
+
+# Testar a função
+exportar_todos()
