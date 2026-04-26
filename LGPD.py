@@ -105,6 +105,7 @@ def exportar_por_ano():
 # Testar a função
 exportar_por_ano()
 
+
 # ---------------------------
 # Atividade 3 - Exportar todos (nome e CPF sem anonimizar)
 # ---------------------------
