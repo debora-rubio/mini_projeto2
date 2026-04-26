@@ -84,3 +84,23 @@ with engine.connect() as conn:
 
 print(users)
 
+# ---------------------------
+# Atividade 2 - Exportar por ano
+# ---------------------------
+import csv
+
+def exportar_por_ano():
+    with engine.connect() as conn:
+        result = conn.execute(text("SELECT * FROM usuarios"))
+        for row in result:
+            row = LGPD(row)  # aplica anonimização
+            ano = row[5].year  # data_nascimento está na posição 5 da tupla
+            nome_arquivo = f"{ano}.csv"
+
+            # abre o arquivo no modo append (adicionar linhas)
+            with open(nome_arquivo, "a", newline="", encoding="utf-8") as f:
+                writer = csv.writer(f)
+                writer.writerow(row)
+
+# Testar a função
+exportar_por_ano()
