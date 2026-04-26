@@ -3,6 +3,8 @@ from datetime import datetime
 
 import time
 from functools import wraps
+
+
 def medir_tempo(func):
     """Decorator que mede o tempo de execução de uma função."""
     @wraps(func)
@@ -45,3 +47,40 @@ with engine.connect() as conn:
 
 for user in users:
     print(user)
+
+# ---------------------------
+# Atividade 1 - Anonimização
+# ---------------------------
+
+def LGPD(row):
+    # Desempacotar os campos da linha (vem do SELECT * FROM usuarios)
+    id, nome, cpf, email, telefone, data_nascimento, created_on, updated_on = row
+
+    # Nome: manter só a primeira letra, resto vira *
+    partes_nome = nome.split(" ")
+    partes_nome[0] = partes_nome[0][0] + "*" * (len(partes_nome[0]) - 1)
+    nome_anon = " ".join(partes_nome)
+
+    # CPF: mostrar só os 3 primeiros dígitos, resto vira *
+    cpf_anon = cpf[:3] + ".***.***-**"
+
+    # Email: esconder usuário, mostrar domínio
+    usuario, dominio = email.split("@")
+    email_anon = usuario[0] + "*" * (len(usuario) - 1) + "@" + dominio
+
+    # Telefone: mostrar apenas os 4 últimos dígitos
+    telefone_anon = telefone[-4:]
+
+    # Retornar a tupla com os dados anonimizados
+    return (id, nome_anon, cpf_anon, email_anon, telefone_anon, data_nascimento, created_on, updated_on)
+
+
+users = []
+with engine.connect() as conn:
+    result = conn.execute(text("SELECT * FROM usuarios LIMIT 10;"))
+    for row in result:
+        row = LGPD(row)   # aplica anonimização
+        users.append(row)
+
+print(users)
+
