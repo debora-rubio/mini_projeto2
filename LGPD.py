@@ -120,9 +120,9 @@ def exportar_por_ano():
 exportar_por_ano()
 
 
-# --------------------------------------------------------
-# Atividade 3 - Exportar todos (nome e CPF sem anonimizar)
-# --------------------------------------------------------
+# # --------------------------------------------------------
+# # Atividade 3 - Exportar todos (nome e CPF sem anonimizar)
+# # --------------------------------------------------------
 import csv
 
 def exportar_todos():
@@ -143,15 +143,15 @@ def exportar_todos():
 # Testar a função
 exportar_todos()
 
-# --------------------------------------------------------------------------------------------------------
-# Atividade 4 - Ajustando o decorator de medição de tempo, e gravando em log.txt, comparar atividade 2 e 3.
-# ---------------------------------------------------------------------------------------------------------
+# # --------------------------------------------------------------------------------------------------------
+# # Atividade 4 - Ajustando o decorator de medição de tempo, e gravando em log.txt, comparar atividade 2 e 3.
+# # ---------------------------------------------------------------------------------------------------------
 
 import time
 from functools import wraps
 
 def medir_tempo(func):
-    """Decorator que mede o tempo de execução de uma função e grava em log."""
+    #"""Decorator que mede o tempo de execução de uma função e grava em log."""
     @wraps(func)
     def wrapper(*args, **kwargs):
         inicio = time.perf_counter()
