@@ -142,3 +142,30 @@ def exportar_todos():
 
 # Testar a função
 exportar_todos()
+
+# --------------------------------------------------------------------------------------------------------
+# Atividade 4 - Ajustando o decorator de medição de tempo, e gravando em log.txt, comparar atividade 2 e 3.
+# ---------------------------------------------------------------------------------------------------------
+
+import time
+from functools import wraps
+
+def medir_tempo(func):
+    """Decorator que mede o tempo de execução de uma função e grava em log."""
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        inicio = time.perf_counter()
+        resultado = func(*args, **kwargs)
+        fim = time.perf_counter()
+        duracao = fim - inicio
+        mensagem = f"⏱ Função '{func.__name__}' executada em {duracao:.6f} segundos.\n"
+        
+        # imprime no terminal
+        print(mensagem.strip())
+        
+        # grava em arquivo de log
+        with open("log_tempo.txt", "a", encoding="utf-8") as log:
+            log.write(mensagem)
+        
+        return resultado
+    return wrapper
