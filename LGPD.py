@@ -48,9 +48,9 @@ with engine.connect() as conn:
 for user in users:
     print(user)
 
-# ---------------------------
-# Atividade 1 - Anonimização
-# ---------------------------
+# --------------------------------------
+# Atividade 1 - Anonimização - 5 nomes.
+# --------------------------------------
 
 def LGPD(row):
     # Desempacotar os campos da linha (vem do SELECT * FROM usuarios)
@@ -84,40 +84,58 @@ with engine.connect() as conn:
 
 print(users)
 
-# ---------------------------
-# Atividade 2 - Exportar por ano
-# ---------------------------
+# ---------------------------------------------
+# Atividade 2 - Exportar por ano de nascimento
+# ---------------------------------------------
 import csv
 
 def exportar_por_ano():
     with engine.connect() as conn:
         result = conn.execute(text("SELECT * FROM usuarios"))
+        
+        # Vamos guardar os registros separados por ano em um dicionário
+        registros_por_ano = {}
+
         for row in result:
             row = LGPD(row)  # aplica anonimização
             ano = row[5].year  # data_nascimento está na posição 5 da tupla
-            nome_arquivo = f"{ano}.csv"
 
-            # abre o arquivo no modo append (adicionar linhas)
-            with open(nome_arquivo, "a", newline="", encoding="utf-8") as f:
+            # Se o ano ainda não existe no dicionário, cria uma lista
+            if ano not in registros_por_ano:
+                registros_por_ano[ano] = []
+            
+            # Adiciona o registro na lista do ano correspondente
+            registros_por_ano[ano].append(row)
+
+        # Agora criamos um arquivo .csv para cada ano
+        for ano, registros in registros_por_ano.items():
+            nome_arquivo = f"{ano}.csv"
+            with open(nome_arquivo, "w", newline="", encoding="utf-8") as f:
                 writer = csv.writer(f)
-                writer.writerow(row)
+                # opcional: cabeçalho
+                writer.writerow(["id", "nome", "cpf", "email", "telefone", "data_nascimento", "created_on", "updated_on"])
+                writer.writerows(registros)
 
 # Testar a função
 exportar_por_ano()
 
 
-# ---------------------------
+# --------------------------------------------------------
 # Atividade 3 - Exportar todos (nome e CPF sem anonimizar)
-# ---------------------------
+# --------------------------------------------------------
 import csv
 
 def exportar_todos():
     with engine.connect() as conn:
         result = conn.execute(text("SELECT * FROM usuarios"))
+        
+        # Criar um único arquivo CSV
         with open("todos.csv", "w", newline="", encoding="utf-8") as f:
             writer = csv.writer(f)
-            # cabeçalho opcional
+            # Cabeçalho opcional
             writer.writerow(["nome", "cpf"])
+            
+            # Escreve todos os registros
             for row in result:
                 id, nome, cpf, email, telefone, data_nascimento, created_on, updated_on = row
                 writer.writerow([nome, cpf])
