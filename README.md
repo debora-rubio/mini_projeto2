@@ -2,7 +2,7 @@
 
 Este projeto foi desenvolvido como parte da disciplina de Linguagem de Programação II na FATEC.  
 O objetivo é aplicar conceitos da **Lei Geral de Proteção de Dados (LGPD)** em manipulação de dados usando Python.
-Os dados de cada registro são dados fakers fornecidos pelo professor.
+Os dados do banco de dados, são fakers fornecidos pelo professor.
 
 ---
 
