@@ -84,9 +84,9 @@ with engine.connect() as conn:
 
 print(users)
 
-# ---------------------------------------------
-# Atividade 2 - Exportar por ano de nascimento
-# ---------------------------------------------
+# -------------------------------------------------------------
+# Atividade 2 - Exportar por ano de nascimento com anonimização.
+# -------------------------------------------------------------
 import csv
 
 def exportar_por_ano():
