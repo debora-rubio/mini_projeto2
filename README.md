@@ -35,11 +35,15 @@ Como Executar:
 
 1-Certifique-se de ter as bibliotecas necessárias instaladas:
 
-SQLAlchemy: Para a abstração e conexão com o banco de dados PostgreSQL.
-Psycopg2: Driver necessário para que o SQLAlchemy se comunique com o PostgreSQL.
-DateTime: Para manipulação de datas de nascimento e logs de tempo.
-Time & Functools: Utilizadas no decorator para medição precisa de performance.
-CSV: Para a geração dos arquivos de relatório solicitados.  
+pip install sqlalchemy==2.0.43 psycopg2-binary==2.9.12 packaging==26.2 setuptools==82.0.1 typing_extensions==4.15.0 wheel==0.47.0
+
+* SQLAlchemy (2.0.43): Para a abstração e conexão com o banco de dados.
+* psycopg2-binary (2.9.12): Driver de conexão para o PostgreSQL.
+* packaging (26.2): Controle de pacotes.
+* setuptools (82.0.1)
+* wheel (0.47.0): Suporte para instalação e compilação de pacotes.
+* typing_extensions (4.15.0): Suporte para tipagem avançada em versões do Python.CSV
+* Functools: Bibliotecas nativas para geração de relatórios e manipulação de funções.  
 
     
 2-Execute o script principal:
