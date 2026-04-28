@@ -48,7 +48,7 @@ pip install sqlalchemy==2.0.43 psycopg2-binary==2.9.12 packaging==26.2 setuptool
     
 2-Execute o script principal:
 
-python seu_arquivo.py
+python LGPD.py
     
 3-Resultados esperados:
 
@@ -59,7 +59,7 @@ python seu_arquivo.py
 
 Estrutura de Arquivos:
 
-`seu_arquivo.py`: Código fonte principal.
+`LGPD.py`: Código fonte principal.
 `log_tempo.txt`: Registro de performance das funções.
 `*.csv`: Relatórios gerados pelo sistema.
 
