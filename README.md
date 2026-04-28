@@ -19,7 +19,7 @@ CPF: Exibe apenas os 3 primeiros dígitos.
 E-mail: Oculta o nome de usuário, mantendo o domínio visível.
 Telefone: Exibe apenas os 4 últimos dígitos.
 
-Atividade 2 - Exportação por Ano:
+Atividade 2 - Exportação por Ano de Nascimento com dados anonimizados:
 
 O sistema filtra todos os usuários do banco e gera arquivos CSV individuais nomeados pelo ano de nascimento (ex: `1990.csv`), contendo os dados devidamente anonimizados.
 
@@ -53,7 +53,7 @@ python LGPD.py
 3-Resultados esperados:
 
 * Visualização de 5 usuários anonimizados no terminal.
-* Criação dos arquivos `.csv` por ano.
+* Criação dos arquivos `.csv` por ano de nascimento e dados anonimizados.
 * Criação do arquivo `todos.csv`.
 * Atualização do arquivo `log_tempo.txt`.
 
