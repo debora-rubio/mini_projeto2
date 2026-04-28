@@ -4,7 +4,7 @@ import time
 from functools import wraps
 import csv
 
-# Configurações de acesso conforme o PDF
+# Banco de dados fornecido pelo professor com dados fakers.
 engine = create_engine("postgresql+psycopg2://alunos:AlunoFatec@200.19.224.150:5432/atividade2", echo=False)
 metadata = MetaData()
 
@@ -20,12 +20,12 @@ usuarios = Table(
     Column('updated_on', DateTime(), default=datetime.now, onupdate=datetime.now)
 )
 
-# --------------------------------------------------------------------------------------------------------
+
 # Atividade 4 - Ajustando o decorator de medição de tempo, e gravando em log.txt, comparar atividade 2 e 3.
-# ---------------------------------------------------------------------------------------------------------
+
 
 def medir_tempo(func):
-    """Decorator que mede o tempo de execução de uma função e grava em log.txt"""
+    #"""Decorator que mede o tempo de execução de uma função e grava em log.txt"""
     @wraps(func)
     def wrapper(*args, **kwargs):
         inicio = time.perf_counter()
@@ -47,9 +47,9 @@ def medir_tempo(func):
         return resultado
     return wrapper
 
-# --------------------------------------
+
 # Atividade 1 - Anonimização - 5 nomes.
-# --------------------------------------
+
 
 def LGPD(row):
     # Desempacotar os campos da linha (vem do SELECT * FROM usuarios)
@@ -74,9 +74,9 @@ def LGPD(row):
     return (id, nome_anon, cpf_anon, email_anon, telefone_anon, data_nascimento, created_on, updated_on)
 
 
-# -------------------------------------------------------------
+
 # Atividade 2 - Exportar por ano de nascimento com anonimização.
-# -------------------------------------------------------------
+
 
 @medir_tempo
 def exportar_por_ano():
@@ -106,9 +106,9 @@ def exportar_por_ano():
                 writer.writerow(["id", "nome", "cpf", "email", "telefone", "data_nascimento", "created_on", "updated_on"])
                 writer.writerows(registros)
 
-# # --------------------------------------------------------
+
 # # Atividade 3 - Exportar todos (nome e CPF sem anonimizar)
-# # --------------------------------------------------------
+
 
 @medir_tempo
 def exportar_todos():
@@ -127,9 +127,9 @@ def exportar_todos():
                 id, nome, cpf, email, telefone, data_nascimento, created_on, updated_on = row
                 writer.writerow([nome, cpf])
 
-# --------------------------------------------------------
+
 # Execução do Script
-# --------------------------------------------------------
+
 
 if __name__ == "__main__":
     # Garante que a tabela existe no banco
