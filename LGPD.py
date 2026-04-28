@@ -1,22 +1,10 @@
-from sqlalchemy import create_engine, MetaData, Table, Column, Integer, String, Date, DateTime, insert, text
+from sqlalchemy import create_engine, MetaData, Table, Column, Integer, String, Date, DateTime, text
 from datetime import datetime
-
 import time
 from functools import wraps
+import csv
 
-
-def medir_tempo(func):
-    """Decorator que mede o tempo de execução de uma função."""
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        inicio = time.perf_counter()  # tempo inicial (mais preciso que time.time)
-        resultado = func(*args, **kwargs)
-        fim = time.perf_counter()     # tempo final
-        duracao = fim - inicio
-        print(f"⏱ Função '{func.__name__}' executada em {duracao:.6f} segundos.")
-        return resultado
-    return wrapper
-
+# Configurações de acesso conforme o PDF
 engine = create_engine("postgresql+psycopg2://alunos:AlunoFatec@200.19.224.150:5432/atividade2", echo=False)
 metadata = MetaData()
 
@@ -32,21 +20,32 @@ usuarios = Table(
     Column('updated_on', DateTime(), default=datetime.now, onupdate=datetime.now)
 )
 
-metadata.create_all(engine)
+# --------------------------------------------------------------------------------------------------------
+# Atividade 4 - Ajustando o decorator de medição de tempo, e gravando em log.txt, comparar atividade 2 e 3.
+# ---------------------------------------------------------------------------------------------------------
 
-@medir_tempo
-def LGPD(row):
-    return row
+def medir_tempo(func):
+    """Decorator que mede o tempo de execução de uma função e grava em log.txt"""
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        inicio = time.perf_counter()
+        resultado = func(*args, **kwargs)
+        fim = time.perf_counter()
+        duracao = fim - inicio
 
-users = []
-with engine.connect() as conn:
-    result = conn.execute(text("SELECT * FROM usuarios LIMIT 5;"))
-    for row in result:
-        row = LGPD(row)
-        users.append(row)
+        # mensagem de log com data/hora
+        agora = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        mensagem = f"[{agora}] Função '{func.__name__}' executada em {duracao:.6f} segundos.\n"
 
-for user in users:
-    print(user)
+        # imprime no terminal
+        print(mensagem.strip())
+
+        # grava em arquivo log_tempo.txt
+        with open("log_tempo.txt", "a", encoding="utf-8") as log:
+            log.write(mensagem)
+
+        return resultado
+    return wrapper
 
 # --------------------------------------
 # Atividade 1 - Anonimização - 5 nomes.
@@ -75,20 +74,11 @@ def LGPD(row):
     return (id, nome_anon, cpf_anon, email_anon, telefone_anon, data_nascimento, created_on, updated_on)
 
 
-users = []
-with engine.connect() as conn:
-    result = conn.execute(text("SELECT * FROM usuarios LIMIT 10;"))
-    for row in result:
-        row = LGPD(row)   # aplica anonimização
-        users.append(row)
-
-print(users)
-
 # -------------------------------------------------------------
 # Atividade 2 - Exportar por ano de nascimento com anonimização.
 # -------------------------------------------------------------
-import csv
 
+@medir_tempo
 def exportar_por_ano():
     with engine.connect() as conn:
         result = conn.execute(text("SELECT * FROM usuarios"))
@@ -116,15 +106,11 @@ def exportar_por_ano():
                 writer.writerow(["id", "nome", "cpf", "email", "telefone", "data_nascimento", "created_on", "updated_on"])
                 writer.writerows(registros)
 
-# Testar a função
-exportar_por_ano()
-
-
 # # --------------------------------------------------------
 # # Atividade 3 - Exportar todos (nome e CPF sem anonimizar)
 # # --------------------------------------------------------
-import csv
 
+@medir_tempo
 def exportar_todos():
     with engine.connect() as conn:
         result = conn.execute(text("SELECT * FROM usuarios"))
@@ -137,35 +123,27 @@ def exportar_todos():
             
             # Escreve todos os registros
             for row in result:
+                # Dados não devem ser anonimizados nesta atividade
                 id, nome, cpf, email, telefone, data_nascimento, created_on, updated_on = row
                 writer.writerow([nome, cpf])
 
-# Testar a função
-exportar_todos()
+# --------------------------------------------------------
+# Execução do Script
+# --------------------------------------------------------
 
-# # --------------------------------------------------------------------------------------------------------
-# # Atividade 4 - Ajustando o decorator de medição de tempo, e gravando em log.txt, comparar atividade 2 e 3.
-# # ---------------------------------------------------------------------------------------------------------
+if __name__ == "__main__":
+    # Garante que a tabela existe no banco
+    metadata.create_all(engine)
 
-import time
-from functools import wraps
+    # Execução da Atividade 1: Imprimir 5 usuários anonimizados no terminal
+    print("\n--- ATIVIDADE 1: 5 USUÁRIOS ANONIMIZADOS ---")
+    with engine.connect() as conn:
+        result = conn.execute(text("SELECT * FROM usuarios LIMIT 5;"))
+        for row in result:
+            row_anon = LGPD(row)
+            print(row_anon)
+    print("------------------------------------------\n")
 
-def medir_tempo(func):
-    #"""Decorator que mede o tempo de execução de uma função e grava em log."""
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        inicio = time.perf_counter()
-        resultado = func(*args, **kwargs)
-        fim = time.perf_counter()
-        duracao = fim - inicio
-        mensagem = f"⏱ Função '{func.__name__}' executada em {duracao:.6f} segundos.\n"
-        
-        # imprime no terminal
-        print(mensagem.strip())
-        
-        # grava em arquivo de log
-        with open("log_tempo.txt", "a", encoding="utf-8") as log:
-            log.write(mensagem)
-        
-        return resultado
-    return wrapper
+    # Execução das Atividades 2 e 3 (que disparam a Atividade 4 através do decorator)
+    exportar_por_ano()
+    exportar_todos()
