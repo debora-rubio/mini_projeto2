@@ -5,6 +5,7 @@ from functools import wraps
 import csv
 
 # Banco de dados fornecido pelo professor com dados fakers.
+# engine = create_engine - motor de conexão do código python com o servidor postgreSQL.
 engine = create_engine("postgresql+psycopg2://alunos:AlunoFatec@200.19.224.150:5432/atividade2", echo=False)
 metadata = MetaData()
 
@@ -22,10 +23,10 @@ usuarios = Table(
 
 
 # Atividade 4 - Ajustando o decorator de medição de tempo, e gravando em log.txt, comparar atividade 2 e 3.
-
+ 
 
 def medir_tempo(func):
-    #"""Decorator que mede o tempo de execução de uma função e grava em log.txt"""
+    # O @wraps é o "Decorator, que mede o tempo de execução de uma função e grava em log.txt"""
     @wraps(func)
     def wrapper(*args, **kwargs):
         inicio = time.perf_counter()
@@ -40,10 +41,11 @@ def medir_tempo(func):
         # imprime no terminal
         print(mensagem.strip())
 
-        # grava em arquivo log_tempo.txt
-        with open("log_tempo.txt", "a", encoding="utf-8") as log:
-            log.write(mensagem)
-
+        # Aqui é onde vai comparar os tempos das atividades 2 e 3.
+        # grava em arquivo log_tempo.txt                             # with abre o arquivo e fecha depois.
+        with open("log_tempo.txt", "a", encoding="utf-8") as log:    # "a" de append, para que nao seja escrito por cima do log anterior.
+            log.write(mensagem)                                      # encoding="utf-8" é um tradutor de caracteres, evitando erros de acentuação,
+                                                                     # emogis, um "ç", etc que estiverem no banco de dados.
         return resultado
     return wrapper
 
@@ -75,12 +77,12 @@ def LGPD(row):
 
 
 
-# Atividade 2 - Exportar por ano de nascimento com anonimização.
+# Atividade 2 - Exportar por ano de nascimento com anonimização.(lista gerada ao lado, desde 1951 até 2011).
 
 
 @medir_tempo
 def exportar_por_ano():
-    with engine.connect() as conn:
+    with engine.connect() as conn:    # conecta ao banco de dados, e garante que a conexão seja fechada depois do bloco.
         result = conn.execute(text("SELECT * FROM usuarios"))
         
         # Vamos guardar os registros separados por ano em um dicionário
@@ -100,15 +102,14 @@ def exportar_por_ano():
         # Agora criamos um arquivo .csv para cada ano
         for ano, registros in registros_por_ano.items():
             nome_arquivo = f"{ano}.csv"
-            with open(nome_arquivo, "w", newline="", encoding="utf-8") as f:
+            with open(nome_arquivo, "w", newline="", encoding="utf-8") as f: #"w"(write), o Python apaga tudo o que já esta escrito e começa do zero.
                 writer = csv.writer(f)
                 # opcional: cabeçalho
                 writer.writerow(["id", "nome", "cpf", "email", "telefone", "data_nascimento", "created_on", "updated_on"])
                 writer.writerows(registros)
 
 
-# # Atividade 3 - Exportar todos (nome e CPF sem anonimizar)
-
+# # Atividade 3 - Arquivo todos.csv gerado ao lado - Exportar todos (nome e CPF sem anonimizar)
 
 @medir_tempo
 def exportar_todos():
@@ -128,19 +129,22 @@ def exportar_todos():
                 writer.writerow([nome, cpf])
 
 
-# Execução do Script
+# Execução do código: aqui é onde o código realmente roda (motor), chamando as funções, garantindo que a tabela existe no
+# banco de dados, imprime os 5 usuários anonimizados e depois executa as atividades 2 e 3, disparando a medição de tempo
+# da atividade 4, gravando os tempos no log_tempo.txt. Imprimi no terminal o tempo de execução de cada função e compara os
+# tempos das atividades 2 e 3, mostrando qual foi mais rápido.
 
+if __name__ == "__main__":     # motor
 
-if __name__ == "__main__":
-    # Garante que a tabela existe no banco
+    # Garante que a tabela existe no banco, se não existir, cria. Se já existir, não faz nada.
     metadata.create_all(engine)
 
     # Execução da Atividade 1: Imprimir 5 usuários anonimizados no terminal
     print("\n--- ATIVIDADE 1: 5 USUÁRIOS ANONIMIZADOS ---")
-    with engine.connect() as conn:
+    with engine.connect() as conn:           # abre a porta de conexão com o banco de dados e fecha depois do bloco.
         result = conn.execute(text("SELECT * FROM usuarios LIMIT 5;"))
         for row in result:
-            row_anon = LGPD(row)
+            row_anon = LGPD(row)   # aqui é onde a função de anonimização é aplicada a cada linha do banco de dados.
             print(row_anon)
     print("------------------------------------------\n")
 
