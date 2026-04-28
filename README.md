@@ -1,40 +1,58 @@
-# Mini Projeto 2 - LGPD
+Projeto LGPD - Manipulação de Dados e Performance
 
-Este projeto foi desenvolvido como parte da disciplina de Linguagem de Programação II na FATEC.  
-O objetivo é aplicar conceitos da **Lei Geral de Proteção de Dados (LGPD)** em manipulação de dados usando Python.
-Os dados do banco de dados, são fakers fornecidos pelo professor.
+Este projeto foi desenvolvido como parte das atividades da faculdade Fatec Rio Claro, na matéria Linguagem de Programação II. O objetivo principal é aplicar os conceitos da Lei Geral de Proteção de Dados (LGPD) em um ambiente de banco de dados PostgreSQL, focando em anonimização de dados, exportação organizada e monitoramento de performance. O Banco de Dados fornecido pelo professor, possuem dados fakers.
 
----
+Tecnologias Utilizadas:
 
-## Estrutura do Projeto
-- `LGPD.py` → Script principal com todas as atividades.
-- `todos.csv` → Arquivo único com nome e CPF de todos os registros (sem anonimização).
-- `ANO.csv` → Arquivos separados por ano de nascimento (com anonimização).
-- `log_tempo.txt` → Arquivo de log com os tempos de execução das atividades 2 e 3.
-- `requirements.txt` → Dependências do projeto.
+Python: Linguagem principal do projeto.
+SQLAlchemy: Para conexão e execução de comandos no banco de dados.
+CSV: Biblioteca nativa para geração de relatórios.
+PostgreSQL: Banco de dados utilizado para armazenamento dos usuários.
 
----
+Funcionalidades (Atividades):
 
-## Atividades
+Atividade 1 - Anonimização de Dados:
 
-### Atividade 1
-Anonimização de dados sensíveis (nome, CPF, email, telefone) usando função `LGPD(row)`.
+Implementação da função `LGPD(row)` para tratar dados sensíveis conforme as regras.
+Nome: Mantém a primeira letra e oculta o restante com asteriscos.
+CPF: Exibe apenas os 3 primeiros dígitos.
+E-mail: Oculta o nome de usuário, mantendo o domínio visível.
+Telefone: Exibe apenas os 4 últimos dígitos.
 
-### Atividade 2
-Exportar registros anonimizados em arquivos separados por ano de nascimento.  
-Exemplo: `2006.csv`, `1990.csv`.
+Atividade 2 - Exportação por Ano:
 
-### Atividade 3
-Gerar um único relatório (`todos.csv`) contendo **nome e CPF** de todos os registros, sem anonimização.
+O sistema filtra todos os usuários do banco e gera arquivos CSV individuais nomeados pelo ano de nascimento (ex: `1990.csv`), contendo os dados devidamente anonimizados.
 
-### Atividade 4
-Aplicar o decorador `@medir_tempo` para medir o tempo de execução das atividades 2 e 3.  
-Os resultados são gravados em `log_tempo.txt` para comparação.
+Atividade 3 - Exportação Geral (Dados Brutos):
 
----
+Geração de um arquivo único chamado `todos.csv` contendo apenas os campos **Nome** e **CPF** sem anonimização.
 
-## Como executar
-1. Clone o repositório ou copie os arquivos para sua máquina.
-2. Instale as dependências:
-   ```bash
-   pip install -r requirements.txt
+Atividade 4 - Monitoramento e Log:
+
+Utilização de um **decorator** (`medir_tempo`) para capturar o tempo de execução das atividades de exportação. Os logs são exibidos no terminal e registrados permanentemente no arquivo `log_tempo.txt` com data e hora.
+
+Como Executar:
+
+1-Certifique-se de ter as bibliotecas necessárias instaladas:
+
+pip install sqlalchemy psycopg2
+    
+2-Execute o script principal:
+
+python seu_arquivo.py
+    
+3-Resultados esperados:
+
+* Visualização de 5 usuários anonimizados no terminal.
+* Criação dos arquivos `.csv` por ano.
+* Criação do arquivo `todos.csv`.
+* Atualização do arquivo `log_tempo.txt`.
+
+Estrutura de Arquivos:
+
+`seu_arquivo.py`: Código fonte principal.
+`log_tempo.txt`: Registro de performance das funções.
+`*.csv`: Relatórios gerados pelo sistema.
+
+
+
