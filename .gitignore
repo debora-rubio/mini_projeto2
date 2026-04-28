@@ -182,3 +182,4 @@ cython_debug/
 
 *.log
 *.csv
+log_tempo.txt
